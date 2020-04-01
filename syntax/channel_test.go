@@ -1,6 +1,7 @@
 package syntax
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -14,4 +15,17 @@ func TestCheck(t *testing.T) {
 	Check(s)
 	// 主进程要稍等一会儿
 	time.Sleep(time.Second)
+}
+
+func TestManySend(t *testing.T) {
+	status := ManySend()
+	fmt.Println(status)
+}
+
+func TestWait(t *testing.T) {
+	Wait()
+}
+
+func TestChannelSelect(t *testing.T) {
+	ChannelSelect()
 }
