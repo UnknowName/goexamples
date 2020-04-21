@@ -10,3 +10,7 @@ func TestTCPServer(t *testing.T) {
 	select {}
 }
 
+func TestUDPServer(t *testing.T) {
+	address := "0.0.0.0:1514"
+	UDPServer(address)
+}

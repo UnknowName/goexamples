@@ -6,7 +6,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-const rabbitUrl = "amqp://guest:guest@128.0.100.170:5672/"
+const rabbitUrl = "amqp://guest:guest@128.0.100.170:5672/test"
 
 func failOnError(err error, msg string) {
 	if err != nil {

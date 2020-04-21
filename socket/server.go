@@ -118,6 +118,30 @@ func NewConnection(conn net.Conn, id uint32, handler Handler)  *Connection{
 	}
 }
 
+/* UDP Server */
+func UDPServer(address string) {
+	udpAddr, err := net.ResolveUDPAddr("udp", address)
+	conn, err := net.ListenUDP("udp", udpAddr)
+	if err != nil {
+		fmt.Println("Listen error ", err)
+		return
+	}
+	fmt.Println("UDP Server Starting...")
+	defer fmt.Println("Exit Server")
+	defer conn.Close()
+	if err != nil {
+		fmt.Println("Accept error ", err)
+		return
+	}
+	for {
+		buf := make([]byte, 1024)
+		if _, err := conn.Read(buf); err == nil {
+			fmt.Println("UDP data string", string(buf))
+		}
+		// fmt.Println("Read maybe over")
+	}
+}
+
 /*
 // 1. 用户请求的数据封装成自定义的Message格式，解决TCP粘包问题
 type Message struct {
