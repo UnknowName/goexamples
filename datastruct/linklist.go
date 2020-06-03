@@ -106,6 +106,14 @@ func (l *LinkList) Append(node Node) {
 }
 
 func (l *LinkList) Get(n int) *Node {
+	if l.Length() == 0 {
+		fmt.Println("Empty List")
+		return  nil
+	}
+	if n <= 0 || n > l.Length() {
+		fmt.Println("位置不合法")
+		return nil
+	}
 	count := 1
 	node := l.head.next
 	if n == 1 {
