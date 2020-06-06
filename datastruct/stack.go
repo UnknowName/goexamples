@@ -47,6 +47,6 @@ func (s *Stack) Push(value interface{}) {
 	}
 	s.lock.Lock()
 	s.top++
-	defer s.lock.Unlock()
 	s.data[s.top] = value
+	defer s.lock.Unlock()
 }
