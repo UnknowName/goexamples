@@ -1,6 +1,9 @@
 package datastruct
 
-import originSync "sync"
+import (
+	"fmt"
+	originSync "sync"
+)
 
 // 加入RWMutex保证线程安全
 type Stack struct {
@@ -49,4 +52,16 @@ func (s *Stack) Push(value interface{}) {
 	s.top++
 	s.data[s.top] = value
 	defer s.lock.Unlock()
+}
+
+func (s *Stack) Show() {
+	for i := s.top; i >= 0; i-- {
+		// dataType := reflect.TypeOf(s.data[i])
+		switch s.data[i].(type) {
+		case int:
+			fmt.Println(s.data[i])
+		case int32:
+			fmt.Println(string(s.data[i].(int32)))
+		}
+	}
 }

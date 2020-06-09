@@ -22,9 +22,10 @@ func TestNewStack(t *testing.T) {
 
 // 使用栈实现表达式求值 3 * 6 + 2 - 3，不支持括号
 func TestStack_Pop(t *testing.T) {
-	expr := "2+2*4"
+	expr := "20/2/2-10+11"
 	numberStack := NewStack(10)
 	symbolStack := NewStack(10)
+	preRune := 'S'
 	for _, v := range expr {
 		// 先判断轮询的字符为数字还是符号
 		if v == '+' || v == '-' || v == '/' || v == '*' {
@@ -50,23 +51,31 @@ func TestStack_Pop(t *testing.T) {
 					symbolStack.Push(v)
 				} else {
 					// 大于时除了当前的符号要入栈， 前面取出的符号也要入栈
-					//TODO 问题出在这里。当下一个运行符大于栈内时，有问题
 					symbolStack.Push(preSymbol)
 					symbolStack.Push(v)
 				}
-
-
 			}
 		} else {
 			// 为数字时，直接入栈
 			// 遍历时为rune类型, 原栈为interface{}类型
-			num, _ := strconv.Atoi(string(v))
-			numberStack.Push(num)
+			// 检查上一个类型是不是数字
+			if preRune == '+' || preRune == '-' || preRune == '*' || preRune == '/' || preRune == 'S' {
+				// 说明前面没有数字，直接入栈
+				num, _ := strconv.Atoi(string(v))
+				numberStack.Push(num)
+			} else {
+				// 说明前面是一个数字，需要拼接
+				preNum := numberStack.Pop()
+				// ASCII码中，因为前一个字符类型为rune。数字是从48开始编码的
+				_num := fmt.Sprintf("%d%d", preNum, v-48)
+				num, _ := strconv.Atoi(_num)
+				numberStack.Push(num)
+			}
 		}
+		preRune = v
 	}
-	// 遍历完计算一次
-	// symbolStack.Show()
-	// numberStack.Show()
+	// 相关元素压入栈中再出栈进行计算
+	// 如果连续出栈的符号是减或者是除,则将连续的取反后再进行计算如(1+2-3-1)
 	result := 0
 	for {
 		num1 := numberStack.Pop()
@@ -74,12 +83,27 @@ func TestStack_Pop(t *testing.T) {
 			fmt.Println(result)
 			break
 		}
-		// num1 := numberStack.Pop()
 		num2 := numberStack.Pop()
 		_symbol := symbolStack.Pop()
+		// 接着取下一个运算符，看是不是同上一个一样为-或者/，是的话计算取反后压入栈中
+		var nextSymbol rune
+		if !symbolStack.Empty() {
+			_nextSymbol := symbolStack.Pop()
+			nextSymbol = _nextSymbol.(rune)
+		}
 		symbol := _symbol.(rune)
-		result = calcul(num1.(int), num2.(int), symbol)
-		numberStack.Push(result)
+		if nextSymbol == symbol && nextSymbol == '-' {
+			result = calcul(num1.(int), num2.(int), '+')
+			symbolStack.Push(nextSymbol)
+			numberStack.Push(result)
+		} else if nextSymbol == symbol && symbol == '/' {
+			result = calcul(num1.(int), num2.(int), '*')
+			symbolStack.Push(nextSymbol)
+			numberStack.Push(result)
+		} else {
+			result = calcul(num1.(int), num2.(int), symbol)
+			numberStack.Push(result)
+		}
 	}
 
 }
