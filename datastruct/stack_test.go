@@ -15,7 +15,8 @@ func TestNewStack(t *testing.T) {
 	stack.Push(5)
 	// stack.Push("a")
 	for i := 0; i < 5; i++ {
-		v := stack.Pop()
+		// stack.Pop()
+		v := stack.Top()
 		fmt.Println(v)
 	}
 }
@@ -141,4 +142,83 @@ func TestStack_Push(t *testing.T) {
 	v1 := '/'
 	v2 := '+'
 	fmt.Println(priority(v1, v2))
+}
+
+// 使用栈实现中缀表达式转为后缀表达式
+/*
+	思路:
+	1. 遇到数字，直接输出
+	2. 遇到运算符，如果栈为空或者栈顶元素为左括号，直拉入栈
+	3. 遇到括号，如果是左括号，直接入栈
+		3.1 如果遇到右括号，则将栈中的运算符一直出栈并输出，直到遇到左括号，左括号不输出
+		3.2 遇到其他运算符从栈中弹出元素直到遇到发现更低优先级的元素(或者栈为空)为止或者遇到左括号。
+			弹出完这些元素后，再将遇到的操作符压入到栈中。
+		3.3 有一点需要注意，只有在遇到" ) "的情况下我们才弹出" ( "，其他情况我们都不会弹出" ( "。
+ */
+func TestStack_Get(t *testing.T) {
+	express := "1+2*3+(4*5+6)*9"
+	var afterExpress string
+	symbolStack := NewStack(10)
+	for _, v := range express {
+		// 为数字直接入栈
+		if v >= '0' && v <= '9' {
+			afterExpress += string(v)
+		} else {
+			symbol := string(v)
+			// 2 如果栈为空或者栈顶为左括号，或者待入栈为左括号，直接入栈
+			if symbol == "(" || symbolStack.Empty() || symbolStack.Top().(string) == "(" {
+				symbolStack.Push(symbol)
+			} else if symbol == ")" {
+				// 为右括号，栈中必须有元素，如果没有元素说明程序前段有误或者表达式不对
+				// 为右括号情况,需要将当前栈内的元素弹出并输出，直到遇到左括号
+				preSymbol := symbolStack.Pop().(string)
+				if symbolStack.Top().(string) == "(" {
+					// 左括号弹出，但不输出
+					symbolStack.Pop()
+				}
+				afterExpress += preSymbol
+			} else {
+				// 其他情况，一直弹出直到遇到比symbol低优先级或者或者左括号
+				// 1. 比较优先级，如果栈顶的优先级低于当前或者为空，直接入栈
+				if low(symbol, symbolStack.Top().(string)) {
+					symbolStack.Push(symbol)
+				} else {
+					// 栈顶优先级大于等于待入元素，一直弹出，直到优先级小，栈为空，栈顶为左括号为止
+					// 弹出后再将当前元素入栈
+					for {
+						if symbolStack.Empty() || symbolStack.Top().(string) == "(" ||
+							low(symbol,symbolStack.Top().(string)){
+							break
+						}
+						preSymbol := symbolStack.Pop().(string)
+						afterExpress += preSymbol
+					}
+					// 弹出后再压入栈中
+					symbolStack.Push(symbol)
+				}
+			}
+		}
+	}
+	// 最后将栈中的运算符输出
+	for {
+		if symbolStack.Empty() {
+			break
+		}
+		symbol := symbolStack.Pop().(string)
+		afterExpress += symbol
+	}
+	fmt.Println(afterExpress)
+}
+
+
+func low(v1, v2 string) bool {
+	value1 := 0
+	value2 := 0
+	if v1 == "*" || v1 == "/" {
+		value1 = 10
+	}
+	if v2 == "*" || v2 == "/" {
+		value2 = 10
+	}
+	return value2 < value1
 }

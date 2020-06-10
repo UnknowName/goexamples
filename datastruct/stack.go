@@ -65,3 +65,7 @@ func (s *Stack) Show() {
 		}
 	}
 }
+
+func (s *Stack) Top() interface{} {
+	return s.data[s.top]
+}
