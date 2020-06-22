@@ -38,7 +38,8 @@ func TestShellSortByInsert(t *testing.T) {
 }
 
 func TestQuickSort(t *testing.T) {
-	lst := []int{45, 38, 66, 90, 88, 10, 25, 45}
-	QuickSort(lst)
-	// fmt.Println(lst)
+	// lst := []int{45, 38, 66, 90, 88, 10, 25, 45}
+	lst := []int{8, 9, 1, 7, 2, -100, 200, 3, 5, 4, 6, 0}
+	QuickSort(lst, 0, len(lst) - 1)
+	fmt.Println(lst)
 }

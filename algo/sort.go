@@ -1,6 +1,8 @@
 package algo
 
-import "fmt"
+import (
+	"fmt"
+)
 
 /*
 	思路: 每进行一轮循环，就确定最大值。同旁边的数据两两进行比较，如果大于，就交换位置
@@ -105,35 +107,29 @@ func ShellSortByInsert(nums []int) {
 }
 
 
-func QuickSort(nums []int) {
-	nums = []int{45, 38, 66, 90, 88, 10, 25, 45}
-	length := len(nums)
-	left := 0
-	right := length - 1
-	// 第一次快速排序
-	middle := nums[left]
-	for {
-		if right <= left {
-			fmt.Println(left, right)
-			postion := left
-			for postion > 0 {
-				nums[left - 1] = nums[left]
-			}
-
-			break
+/*
+	思路: 左右双指针，key一般取第一个，先从右边找一个比key小的数，再从左边找一个比key大的数，然后交换。
+    左右指针向对方靠拢，当左指针等于右指针时，一轮排序完成。左边小于基准数，右边大于基准数，再分别对左右两边排序
+ */
+func QuickSort(nums []int, left, right int) {
+	i := left
+	j := right
+	key := nums[left]
+	for i != j {
+		// 先从右边找小于key的值,并交换
+		for nums[j] >= key && j > i {
+			j--
 		}
-		for nums[right] >= middle {
-			right--
+		nums[i], nums[j] = nums[j], nums[i]
+		// 再从左边找大于key的值，并交换
+		for nums[i] <= key && j > i {
+			i++
 		}
-		// temp := nums[right]
-		for nums[left] <= middle {
-			left++
-		}
-		nums[right], nums[left] = nums[left], nums[right]
-		fmt.Println(nums)
-		left++
-		right--
-		//break
+		nums[i], nums[j] = nums[j], nums[i]
 	}
-	fmt.Println(nums)
+	if left == right {
+		return
+	}
+	QuickSort(nums, 0, left)
+	QuickSort(nums, left + 1, right)
 }
