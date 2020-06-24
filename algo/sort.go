@@ -133,3 +133,66 @@ func QuickSort(nums []int, left, right int) {
 	QuickSort(nums, 0, left)
 	QuickSort(nums, left + 1, right)
 }
+
+
+func MergeSort(nums []int) []int {
+	if len(nums) < 2 {
+		return nums
+	}
+	i := len(nums) / 2
+	left := MergeSort(nums[0:i])
+	right := MergeSort(nums[i:])
+	// fmt.Println(left, right)
+	result := merge(left, right)
+	return result
+}
+
+
+func merge(nums1, nums2 []int) []int {
+	length1, length2 := len(nums1), len(nums2)
+	result := make([]int, length1 + length2)
+	i, j, k := 0, 0, 0
+	// 两个数组比对，小的先放进结果集
+	for i < length1 && j < length2 {
+		if nums1[i] < nums2[j] {
+			result[k] = nums1[i]
+			i++
+		} else {
+			result[k] = nums2[j]
+			j++
+		}
+		k++
+	}
+	// 比对后再将剩余的数加入数组中，两个都要遍历过一次
+	for i < length1 {
+		result[k] = nums1[i]
+		i++
+		k++
+	}
+	for j < length2 {
+		result[k] = nums2[j]
+		j++
+		k++
+	}
+	return result
+}
+
+/*
+func mergeOrigin(left, right []int) []int {
+	result := make([]int, 0)
+	m, n := 0, 0 // left和right的index位置
+	l, r := len(left), len(right)
+	for m < l && n < r {
+		if left[m] > right[n] {
+			result = append(result, right[n])
+			n++
+			continue
+		}
+		result = append(result, left[m])
+		m++
+	}
+	result = append(result, right[n:]...)
+	result = append(result, left[m:]...)
+	return result
+}
+*/
