@@ -7,8 +7,8 @@ import (
 
 // 标准的Struct
 type Version struct {
-	Number string       `json:"number"`
-	BuildHash string    `json:"build_hash"`
+	Number    string `json:"number"`
+	BuildHash string `json:"build_hash"`
 }
 
 func (v *Version) GetVersion() {
@@ -16,10 +16,10 @@ func (v *Version) GetVersion() {
 }
 
 type Elastic struct {
-	Name string         `json:"name"`
-	Tag  string         `json:"tagline"`
+	Name string `json:"name"`
+	Tag  string `json:"tagline"`
 	// 非匿名嵌入，只有属性会继承，结构体的方法不会
-	Version Version     `json:"version"`
+	Version Version `json:"version"`
 }
 
 func (e *Elastic) Echo() {

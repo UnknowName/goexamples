@@ -30,21 +30,20 @@ func RabbitMQProvider() {
 		false,
 		false,
 		nil,
-		)
+	)
 	msg := "hello,world"
 	failOnError(err, "Declare queue failed")
 	err = channel.Publish(
 		"",
-		 queue.Name,
+		queue.Name,
 		false,
 		false,
 		amqp.Publishing{ContentType: "text/plain", Body: []byte(msg)},
-		)
+	)
 	failOnError(err, "Send to msg to RabbitMQ failed")
 }
 
-
-func RabbitMQConsumer(){
+func RabbitMQConsumer() {
 	conn, err := amqp.Dial(rabbitUrl)
 	failOnError(err, "Connect RabbitMQ Failed")
 	defer conn.Close()
@@ -57,7 +56,7 @@ func RabbitMQConsumer(){
 		false,
 		false,
 		false,
-		nil, )
+		nil)
 	failOnError(err, "Queue declare failed")
 	// 返回一个只读的chan
 	msgChan, err := channel.Consume(
@@ -68,7 +67,7 @@ func RabbitMQConsumer(){
 		false,
 		false,
 		nil,
-		)
+	)
 	failOnError(err, "Get RabbitMQ message failed")
 	for d := range msgChan {
 		log.Printf("Recived Message from RabbitMQ: %s", d.Body)

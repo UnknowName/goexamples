@@ -17,16 +17,15 @@ func Echo(x, y string) (result string) {
 
 func Recursive(n int) (total int) {
 	/*
-	递归函数技巧：
-	设定一个退出条件，当达到退出条件时，返回。
-	目前实现还有误
-	 */
+		递归函数技巧：
+		设定一个退出条件，当达到退出条件时，返回。
+		否则调用自身
+	*/
 	if n == 1 || n == 0 {
-		total = n
-	}else{
-		total += Recursive(n-1)
+		return n
+	} else {
+		return Recursive(n - 1) * n
 	}
-	return total
 }
 
 func f(i interface{}) (returnStr string) {
@@ -53,9 +52,9 @@ func FunctionFunction(funcArg func(interface{}) string, args ...interface{}) {
 // 闭包函数
 func CloseFunction() (f func() int) {
 	var x int
-	f = func () int {
+	f = func() int {
 		x += 1
-		return  x * x
+		return x * x
 	}
 	return f
 }

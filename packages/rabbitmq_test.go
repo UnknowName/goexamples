@@ -3,7 +3,7 @@ package packages
 import "testing"
 
 func TestRabbitMQProvider(t *testing.T) {
-	for i :=0;i < 10;i ++ {
+	for i := 0; i < 10; i++ {
 		RabbitMQProvider()
 	}
 }

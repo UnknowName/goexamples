@@ -45,7 +45,14 @@ func TestQuickSort(t *testing.T) {
 }
 
 func TestMergeSort(t *testing.T) {
-	lst := []int{8, 9, 1, 7, 2, -100, 200, 3, 5, 4, 6, 0}
+	lst := []int{8, 9, 1, 7, 2, -100, 200, 3, 5, 4, 6, 0,11}
 	nums := MergeSort(lst)
 	fmt.Println(nums)
+}
+
+func TestMerge(t *testing.T) {
+	nums1 := []int{0,1,2,3}
+	num2 := []int{2,5,6}
+	result := merge(nums1, num2)
+	fmt.Println(result)
 }

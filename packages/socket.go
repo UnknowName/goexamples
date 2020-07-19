@@ -19,7 +19,7 @@ func EchoServer() {
 }
 
 func failed(err error, msg string) {
-	if err !=nil {
+	if err != nil {
 		fmt.Println(msg, err)
 		return
 	}
@@ -30,7 +30,7 @@ func handler(c net.Conn) {
 	defer c.Close()
 	for {
 		reader := bufio.NewReader(c)
-		s , err := reader.ReadString('\n')
+		s, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Read from socket err ", err)
 			return

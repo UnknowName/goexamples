@@ -6,7 +6,7 @@ type Humaner interface {
 }
 
 type Chinese struct {
-	name string
+	name   string
 	height uint32
 }
 

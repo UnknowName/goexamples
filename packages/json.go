@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func Map2Json(){
+func Map2Json() {
 	dict := make(map[string]string)
 	dict["name"] = "unknowname"
 	dict["country"] = "china"
@@ -17,7 +17,7 @@ func Map2Json(){
 	fmt.Println(string(jsonByte))
 }
 
-func Json2Map(){
+func Json2Map() {
 	jsonStr := `{"name":"unknowname", "country": "china"}`
 	dict := make(map[string]string)
 	err := json.Unmarshal([]byte(jsonStr), &dict)

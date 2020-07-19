@@ -50,7 +50,7 @@ type Handler interface {
 }
 
 // Echo回显的一个实现
-type EchoHandler struct {}
+type EchoHandler struct{}
 
 func NewEchoHandler() Handler {
 	return &EchoHandler{}
@@ -110,7 +110,7 @@ func (c *Connection) Start() {
 	c.handler.After(c.conn)
 }
 
-func NewConnection(conn net.Conn, id uint32, handler Handler)  *Connection{
+func NewConnection(conn net.Conn, id uint32, handler Handler) *Connection {
 	return &Connection{
 		conn:    conn,
 		id:      id,
@@ -185,4 +185,4 @@ type Request struct {
 type (r *Request) GetConnect() net.Conn {
 	return r.conn
 }
- */
+*/

@@ -112,6 +112,9 @@ func ShellSortByInsert(nums []int) {
     左右指针向对方靠拢，当左指针等于右指针时，一轮排序完成。左边小于基准数，右边大于基准数，再分别对左右两边排序
  */
 func QuickSort(nums []int, left, right int) {
+	if left >= right {
+		return
+	}
 	i := left
 	j := right
 	key := nums[left]
@@ -121,17 +124,15 @@ func QuickSort(nums []int, left, right int) {
 			j--
 		}
 		nums[i], nums[j] = nums[j], nums[i]
+
 		// 再从左边找大于key的值，并交换
 		for nums[i] <= key && j > i {
 			i++
 		}
 		nums[i], nums[j] = nums[j], nums[i]
 	}
-	if left == right {
-		return
-	}
-	QuickSort(nums, 0, left)
-	QuickSort(nums, left + 1, right)
+	QuickSort(nums, left, i - 1)
+	QuickSort(nums, i + 1, right)
 }
 
 
@@ -195,4 +196,4 @@ func mergeOrigin(left, right []int) []int {
 	result = append(result, left[m:]...)
 	return result
 }
-*/
+ */
