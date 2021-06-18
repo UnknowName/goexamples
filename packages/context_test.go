@@ -16,3 +16,7 @@ func TestValueContext(t *testing.T) {
 	ValueContext()
 }
 
+func TestMainWorker(t *testing.T) {
+	MainWorker()
+}
+

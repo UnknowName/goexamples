@@ -3,6 +3,7 @@ package packages
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -14,6 +15,7 @@ import (
 */
 
 // 相关子Goroutine取消后全部取消
+
 func Context() {
 	go http.ListenAndServe(":8099", nil)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -54,6 +56,7 @@ func A(ctx context.Context) string {
 }
 
 // Goroutine超时取消
+
 func DeadContext() {
 	timeout := time.Now().Add(time.Second * 3)
 	// ctx设置为3秒超时.WithTime实际上就是WithDeadline
@@ -81,6 +84,7 @@ func DeadContext() {
 }
 
 // 可以简单的看起是一个map类型，用于在Goroutine间传递的map
+
 func ValueContext() {
 	// 这里故意将一般类型转换为指定类型，是因为Value的参数是Interface。防止重复的数据被弄乱，这样传进去的是不同类型，即使
 	// 相同值的变量也会被区分开来
@@ -96,4 +100,42 @@ func ValueContext() {
 		handResponse(ctx)
 	}
 	processRequest("1001", "abc")
+}
+
+// context.Context 多个Goroutine同时订阅 ctx.Done() 管道中的消息，一旦接收到取消信号就立刻停止当前正在执行的工作。
+
+func MainWorker() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
+	go subWorker1(ctx)
+	go subWorker2(ctx)
+	// 3秒后取消,如果超过5秒，因为context定义了5秒超时，子进程5秒后会超时，ctx.Done()会返回内容
+	time.Sleep(time.Second * 3)
+	cancel()
+}
+
+func subWorker1(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done(): // 不调用cancel 5秒后会有返回,那时间到。如果调用cancel，马上返回
+			log.Println("main process cancel", ctx.Err())
+			return
+		default:
+			log.Println("sub worker1 running")
+			time.Sleep(time.Second)
+		}
+	}
+
+}
+
+func subWorker2(ctx context.Context) {
+	for {
+		select {
+		case <- ctx.Done():
+			log.Println("sub worker2 exit")
+			return
+		default:
+			log.Println("sub worker2 running")
+			time.Sleep(time.Second)
+		}
+	}
 }
