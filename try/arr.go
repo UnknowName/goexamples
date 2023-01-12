@@ -470,3 +470,36 @@ func Rotate(nums []int, k int)  {
 	fmt.Println(nums)
 }
 
+// # 239
+func MaxSlidingWindow(nums []int, k int) []int {
+	if len(nums) <= 1 || k == 1 {
+		return nums
+	}
+	result := make([]int, 0)
+	// queue里面记录的是索引
+	queue := make([]int, 0)
+	left := 0
+	for i, v := range nums {
+		// 左指针是否移动
+		if i > k - 1 {
+			left += 1
+		}
+		// 往queue里面加数据。新元素要大于尾部元素
+		// queue[len(queue) - 1] 取queue的最后一个元素在nums的索引值
+		// 所以元素值就是nums[queue[len(queue)-1]]
+		for len(queue) > 0 && v > nums[queue[len(queue)-1]] {
+			queue = queue[:len(queue)-1]
+		}
+		queue = append(queue, i)
+
+		// queue头部的索引是否还有效，因为指针移动，值不在滑动窗口内，就要失效
+		if queue[0] < left {
+			queue = queue[1:]
+		}
+		if i >= k - 1 {
+			result = append(result, nums[queue[0]])
+		}
+	}
+	return result
+}
+

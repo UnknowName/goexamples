@@ -67,18 +67,23 @@ func DeadContext() {
 	go func(ctx context.Context) {
 		defer wg.Done()
 		select {
+		/*
 		case <-time.After(time.Second * 2):
-			// 这里2秒后就会退出，因为下面的ctx.Done()代码快会跳过
+			// 如果cancel一直不调用，这里2秒后就会退出，因为下面的ctx.Done()代码快会跳过
 			fmt.Println("After 2 second, the goroutine exit")
 			fmt.Println(ctx.Err())
 			fmt.Println(ctx.Deadline())
+		 */
 		case <-ctx.Done():
-			// 实际这里可以用于等待一个goroutine。
-			fmt.Println("Goroutine timeout end")
+			// 如果cancel调用了，那么这里马上会有返回，因此下面代码马上执行
+			// 如果cancel一直不调用，那么因为timeout到时间到期，而ctx.Done()返回，
+			fmt.Println("Goroutine exit now")
+			// 如果是调用Call cancel()而退出的ctx.Err()为nil。超时不为空
 			fmt.Println(ctx.Err())
 		}
 	}(ctx)
 	// 取消
+	time.Sleep(time.Second * 5)
 	cancel()
 	wg.Wait()
 }

@@ -2,6 +2,7 @@ package try
 
 import (
 	"fmt"
+	"log"
 	"testing"
 )
 
@@ -89,4 +90,10 @@ func TestPivotIndex(t *testing.T) {
 
 func TestRotate3(t *testing.T) {
 	Rotate([]int{1,2,3,4,5,6,7,8,9}, 2)
+}
+
+func TestMaxSlidingWindow(t *testing.T) {
+	nums := []int{1,3,1,2,0,5}
+	results := MaxSlidingWindow(nums, 3)
+	log.Println("results=", results)
 }

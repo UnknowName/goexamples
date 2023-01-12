@@ -2,6 +2,7 @@ package datastruct
 
 import (
     "fmt"
+    "log"
     "testing"
 )
 
@@ -16,6 +17,7 @@ func TestNewHeap(t *testing.T) {
     for heap.Size() >= 2 {
         x := heap.Pop()
         y := heap.Pop()
+        log.Println(x, y)
         if x == y {
             continue
         }

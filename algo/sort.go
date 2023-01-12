@@ -178,22 +178,43 @@ func merge(nums1, nums2 []int) []int {
 	return result
 }
 
-/*
-func mergeOrigin(left, right []int) []int {
-	result := make([]int, 0)
-	m, n := 0, 0 // left和right的index位置
-	l, r := len(left), len(right)
-	for m < l && n < r {
-		if left[m] > right[n] {
-			result = append(result, right[n])
-			n++
+func BucketSort(nums []int) {
+	// 1. 先获取最大值与最小值，确定桶的个数以及基数
+	if len(nums) < 2 {
+		return
+	}
+	min := nums[0]
+	max := nums[1]
+	if min > max {
+		nums[0], nums[1] = nums[1], nums[0]
+		min, max = max, min
+	}
+	for i := 2; i < len(nums); i++ {
+		if nums[i] < min {
+			min = nums[i]
+		}
+		if nums[i] > max {
+			max = nums[i]
+		}
+	}
+	base := (max - min) / len(nums) + 1
+	cnt := (max - min) / base + 1
+	buckets := make([][]int, cnt)
+	for _, num := range nums {
+		index := (num - min) / base
+		buckets[index] = append(buckets[index], num)
+	}
+	for i := range buckets {
+		BucketSort(buckets[i])
+	}
+	i := 0
+	for _, _nums := range buckets {
+		if len(_nums) == 0 {
 			continue
 		}
-		result = append(result, left[m])
-		m++
+		for j := range _nums {
+			nums[i] = _nums[j]
+			i++
+		}
 	}
-	result = append(result, right[n:]...)
-	result = append(result, left[m:]...)
-	return result
 }
- */

@@ -56,3 +56,9 @@ func TestMerge(t *testing.T) {
 	result := merge(nums1, num2)
 	fmt.Println(result)
 }
+
+func TestBucketSort(t *testing.T) {
+	lst := []int{8, 9, 1, 7, 2, -100, 200, 3, 5, 4, 6, 0,11}
+	BucketSort(lst)
+	fmt.Println(lst)
+}
