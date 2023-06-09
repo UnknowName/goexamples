@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+// the name of import package
+option go_package = "goexamples/grpc/proto";
+
+// the package name of generate go code
+package proto;
+
+// define service,like interface, server go code need to implement this
+service Greeter {
+    // define the meth of service
+    rpc SayHello(HelloRequest) returns (HelloResponse) {}
+}
+
+
+message HelloRequest {
+    string Name = 1; // number must be present
+}
+
+message HelloResponse {
+    string Msg = 1;
+}
