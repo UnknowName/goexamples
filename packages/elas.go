@@ -6,45 +6,9 @@ import (
 	"fmt"
 	"github.com/elastic/go-elasticsearch/v7"
 	"log"
+	"os"
 	"strings"
 )
-
-func Search(address string, query string) error {
-	cfg := elasticsearch.Config{
-		Addresses: []string{
-			address,
-		},
-	}
-	es, err := elasticsearch.NewClient(cfg)
-	if err != nil {
-		return err
-	}
-	_query := `{
-	    "query": {
-	        "bool": {
-	            "filter": {"range": {"timestamp": {"gte":"2023-01-04 03:20:20.631","lte": "2023-01-04 04:25:20.631"}}},
-				"must":   {"match": {"source": "sixunmall-jobhost1-79584ddd7b-pr6m5"}}
-	        }
-	    },
-		"_source": ["source", "message"],
-		"from": %d,
-		"size": %d
-	}`
-	start := 0
-	q := fmt.Sprintf(_query, start, 1)
-	total := GetTotal(es, q)
-	log.Println("Total", total)
-	size := 20
-	for total >= 0 {
-		if SearchWrite(es, fmt.Sprintf(_query, start, size)) != nil {
-			log.Println("Get", start, err)
-			break
-		}
-		total -= size
-		start += size
-	}
-	return nil
-}
 
 func GetTotal(es *elasticsearch.Client, search string) int {
 	res, err := es.Search(
@@ -62,10 +26,16 @@ func GetTotal(es *elasticsearch.Client, search string) int {
 		return GetTotal(es, search)
 	}
 	total := record["hits"].(map[string]interface{})["total"].(float64)
+	log.Println(record)
 	return int(total)
 }
 
-func SearchWrite(es *elasticsearch.Client, search string) error {
+func SearchWrite(es *elasticsearch.Client, search, saveFile string) error {
+	file, err := os.OpenFile(saveFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalln("open file error", err)
+	}
+	defer file.Close()
 	res, err := es.Search(
 		es.Search.WithContext(context.Background()),
 		es.Search.WithBody(strings.NewReader(search)),
@@ -84,9 +54,32 @@ func SearchWrite(es *elasticsearch.Client, search string) error {
 	if hits == nil {
 		return nil
 	}
+	total := record["hits"].(map[string]interface{})["total"].(float64)
+	log.Println("当前取到条数为", total)
+	cnt := 0
 	for _, hit := range hits.([]interface{}) {
 		item := hit.(map[string]interface{})["_source"].(map[string]interface{})
-		log.Println(item)
+		msg := item["full_message"]
+		msgStr := fmt.Sprintf("%s", msg)
+		cnt++
+		if ! strings.HasPrefix(msgStr,"接口") {
+			continue
+		}
+		infos := strings.Split(fmt.Sprintf("%s", msg),"请求报文：")
+		info := strings.Split(fmt.Sprintf("%s", infos[1]), "错误信息")
+		writeStr := fmt.Sprintf("%s\n", info[0])
+		line := strings.TrimSuffix(writeStr, "\n")
+		if line == "\n" {
+			continue
+		}
+		_, err = file.WriteString(fmt.Sprintf("%s\n", line))
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
+	if cnt != int(total) {
+		log.Fatalln("写入数据不对")
+	}
+	log.Println("总写入", cnt, "条数")
 	return nil
 }

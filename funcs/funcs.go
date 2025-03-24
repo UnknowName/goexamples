@@ -7,6 +7,7 @@ import (
 )
 
 // Golang的函数不支持关键字参数与默认参数，所有参数必须按定义时的位置传入
+
 func Echo(x, y string) (result string) {
 	var buf bytes.Buffer
 	buf.WriteString(x)
@@ -42,6 +43,7 @@ func f(i interface{}) (returnStr string) {
 }
 
 // 函数的参数是函数，可变长参数列表
+
 func FunctionFunction(funcArg func(interface{}) string, args ...interface{}) {
 	fmt.Printf("%#v,\n", args)
 	fmt.Println(len(args))
@@ -50,6 +52,7 @@ func FunctionFunction(funcArg func(interface{}) string, args ...interface{}) {
 }
 
 // 闭包函数
+
 func CloseFunction() (f func() int) {
 	var x int
 	f = func() int {

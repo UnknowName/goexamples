@@ -2,6 +2,7 @@ package array
 
 import (
     "fmt"
+    "log"
     "testing"
 )
 
@@ -13,6 +14,10 @@ func TestSortArrayByParity(t *testing.T) {
 
 func TestTmp(t *testing.T) {
     nums := []int{10,9,8}
-    Tmp(&nums)
     fmt.Println(nums)
+}
+
+func TestFilter(t *testing.T) {
+    total := Filter(50)
+    log.Println(total)
 }
